@@ -4,8 +4,9 @@ interface
 
 uses windows,g2048types;
 
-function BestAction(GameField:tGameField;var res:double;var n:integer;MaxLevel:Integer=10):t2048Action;
-var TimeLimit:DWord=100;
+function BestAction(GameField: tGameField; var res: double; var n: integer; MaxLevel: Integer=10):t2048Action;
+
+var TimeLimit:DWord=50;
 
 implementation
 

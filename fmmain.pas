@@ -165,7 +165,7 @@ var
     n:integer;
 begin
   NextAction:=BestAction(fGameField,res,n,10);
-  Button1.caption:=inttostr(n)+':'+GetEnumName(TypeInfo(t2048Action),ord(NextAction))+' '+FormatFloat('######.##',res);
+  Button1.caption:='level '+inttostr(n)+': '+GetEnumName(TypeInfo(t2048Action),ord(NextAction))+' '+FormatFloat('######.##',res);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
