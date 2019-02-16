@@ -6,13 +6,17 @@ uses windows,g2048types;
 
 function BestAction(GameField: tGameField; var res: double; var n: integer; MaxLevel: Integer=10):t2048Action;
 
-var TimeLimit:DWord=50;
+var TimeLimit:DWord=50;{msecs to break if level calculation exceed, increase on bad forecast}
 
 implementation
 
 uses cache;
 
-var LineValues1,LineValues2,LineValues3,LineValues4:array[0..65535] of integer;
+var LineValues1 {possible empty cells for lines after shift},
+    LineValues2 {weights for border lines},
+    LineValues3 {weights for center lines},
+    LineValues4 {weights for combination of angles}:
+      array[0..65535] of integer;
     GameCache:tGameCache;
 const
     Empty1Coef=1;
@@ -25,8 +29,8 @@ type
     constructor Create;
     destructor Destroy;override;
   private
-    function EstimateAllRandom(n, Level: Integer): double;
-    function EstimatePosition(g: tGameField): double;
+    function EstimateAllRandom(n, Level: Integer): double;//estimate LevelFields[Level] with hash and recurrency
+    function EstimatePosition(g: tGameField): double;//estimate position only
     procedure FindBestAction(n, Level: integer;
       var res: double;var action: t2048Action);
     procedure FreeLevelFields;
@@ -38,14 +42,14 @@ var MainCalc:tCalc;
 function tCalc.EstimatePosition(g:tGameField):double;
 var l1,l2,l3,l4,l5,l6,l7,l8,v1:integer;
 begin
-  l1:=g.EncodeLine(0,1,2,3);
+  l1:=g.EncodeLine(0,1,2,3);{border}
   l2:=g.EncodeLine(4,5,6,7);
   l3:=g.EncodeLine(8,9,10,11);
-  l4:=g.EncodeLine(12,13,14,15);
-  l5:=g.EncodeLine(0,4,8,12);
+  l4:=g.EncodeLine(12,13,14,15);{border}
+  l5:=g.EncodeLine(0,4,8,12);   {border}
   l6:=g.EncodeLine(1,5,9,13);
   l7:=g.EncodeLine(2,6,10,14);
-  l8:=g.EncodeLine(3,7,11,15);
+  l8:=g.EncodeLine(3,7,11,15);  {border}
   v1:=LineValues1[l1]+
       LineValues1[l2]+
       LineValues1[l3]+
@@ -60,15 +64,15 @@ begin
     if v1>Empty1Coef*3 then
       v1:=Empty1Coef*3 div 2+v1 div 2;
     Result:=(v1+
-      LineValues2[l1]+
+      LineValues2[l1]+   {border}
       LineValues3[l2]+
       LineValues3[l3]+
-      LineValues2[l4]+
-      LineValues2[l5]+
+      LineValues2[l4]+   {border}
+      LineValues2[l5]+   {border}
       LineValues3[l6]+
       LineValues3[l7]+
-      LineValues2[l8]+
-      LineValues4[g.EncodeLine(0,3,15,12)])/10;
+      LineValues2[l8]+   {border}
+      LineValues4[g.EncodeLine(0,3,15,12)]{angles})/10;
     if v1<=Empty1Coef*2 then
       Result:=Result-70
     else
@@ -124,6 +128,7 @@ begin
       LevelFields[Level+1].Assign(LevelFields[Level]);
       LevelFields[Level+1].RawData[i]:=1;
       FindBestAction(n,Level+1,res,action);
+      //check 4 only for small empty cells count
       if (n<=1) and (nEmpty<5) or (nEmpty<4) then begin
         Result:=Result+res*(1-Prop4)/nEmpty;
         LevelFields[Level+1].Assign(LevelFields[Level]);
@@ -232,6 +237,7 @@ begin
   if (v2=0) and (v1>3) and (v1=v3) then
     Result:=Result+(v1-3);
 end;
+{estimate border line}
 function Estimate2(v,v1,v2,v3:integer):integer;
 var ar:array[0..3] of integer;
     i,bestind,best2:integer;
@@ -267,6 +273,7 @@ begin
     Result:=Result+(v3-7);
   Result:=Result+5;
 end;
+{estimate non-border line}
 function Estimate3(v,v1,v2,v3:integer):integer;
 begin
   Result:=Delta3(v,v1)+Delta3(v1,v2)+Delta3(v2,v3)+BaseValue(v,v1,v2,v3);
@@ -280,12 +287,13 @@ begin
     Result:=Result-(v2-6);
   Result:=Result+10;
 end;
+{estimate set of angles}
 function Estimate4(v,v1,v2,v3:integer):integer;
 begin
   Result:=0;
-  if v+v2>14 then
+  if v+v2>14 then {diagonal angles}
     Result:=Result-5*(v+v2-14);
-  if v1+v3>14 then
+  if v1+v3>14 then {diagonal angles}
     Result:=Result-5*(v1+v3-14);
 end;
 procedure FillLineValues;
@@ -294,7 +302,7 @@ var GF:tGameField;
 begin
   GF:=tGameField.Create;
   for i:=0 to high(LineValues1) do begin
-    GF.DecodeLine(0,1,2,3,i);
+    GF.DecodeLine(0,1,2,3,i); {fill any value as values in cells of first line}
     LineValues2[i]:=Estimate2(GF.RawData[0],GF.RawData[1],GF.RawData[2],GF.RawData[3]);
     LineValues3[i]:=Estimate3(GF.RawData[0],GF.RawData[1],GF.RawData[2],GF.RawData[3]);
     LineValues4[i]:=Estimate4(GF.RawData[0],GF.RawData[1],GF.RawData[2],GF.RawData[3]);

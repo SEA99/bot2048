@@ -12,8 +12,8 @@ type
       procedure SetData(row, col: integer; const Value: byte);
     public
       RawData:tGameFieldData;
-      function EncodeLine(x,x1,x2,x3:integer):word;
-      procedure DecodeLine(x,x1,x2,x3:integer;value:word);
+      function EncodeLine(x,x1,x2,x3:integer):word;{4 bit for each value -> common 16 bit value}
+      procedure DecodeLine(x,x1,x2,x3:integer;value:word);{decode value to positions x..x3}
       function Shift(x0,x0step,shift:integer):boolean;
       function IntShiftLine(x,x1,x2,x3:integer):Boolean;
       function ShiftLine(x,shift:integer):Boolean;
