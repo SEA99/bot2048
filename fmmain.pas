@@ -38,6 +38,7 @@ type
     procedure SpeedButton3Click(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
+    procedure CheckRandomClick(Sender: TObject);
   private
     fGameField,GameParsed:tGameField;
     val2count,val4count:integer;
@@ -90,6 +91,7 @@ begin
     if CheckRandom.Checked then
       GameField.FillRandom;
     grid.Invalidate;
+    Button1.Caption:='';
   end;
 end;
 
@@ -99,6 +101,7 @@ begin
     if CheckRandom.Checked then
       GameField.FillRandom;
     grid.Invalidate;
+    Button1.Caption:='';
   end;
 end;
 
@@ -108,6 +111,7 @@ begin
     if CheckRandom.Checked then
       GameField.FillRandom;
     grid.Invalidate;
+    Button1.Caption:='';
   end;
 end;
 
@@ -117,6 +121,7 @@ begin
     if CheckRandom.Checked then
       GameField.FillRandom;
     grid.Invalidate;
+    Button1.Caption:='';
   end;
 end;
 
@@ -270,6 +275,14 @@ begin
   grid.Invalidate;
   if not fGameField.UndefinedExists then
     BitBtn5Click(nil);
+end;
+
+procedure TForm1.CheckRandomClick(Sender: TObject);
+begin
+  if CheckRandom.Checked then begin
+    GameField.FillRandom;
+    grid.Invalidate;
+  end;
 end;
 
 end.

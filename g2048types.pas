@@ -7,9 +7,9 @@ type
   tGameFieldData=array[0..15] of byte;
   t2048Action=(taUp,taDown,taLeft,taRight);
   tGameField=class
-  private
-    function GetData(row, col: integer): byte;
-    procedure SetData(row, col: integer; const Value: byte);
+    private
+      function GetData(row, col: integer): byte;
+      procedure SetData(row, col: integer; const Value: byte);
     public
       RawData:tGameFieldData;
       function EncodeLine(x,x1,x2,x3:integer):word;
@@ -85,7 +85,6 @@ function tGameField.ShiftLine(x, shift: integer):Boolean;
 var x1,x2,x3:integer;
     v1,v2:integer;
 begin
-  Result:=False;
   x1:=x+shift;
   x2:=x1+shift;
   x3:=x2+shift;
@@ -103,6 +102,7 @@ end;
 
 function tGameField.DoAction(Action: t2048Action): boolean;
 begin
+  Result:=False;
   case Action of
   taUp:Result:=shift(0,1,4);
   taDown:Result:=shift(12,1,-4);
@@ -128,6 +128,7 @@ end;
 
 function tGameField.IntShiftLine(x, x1, x2, x3: integer): Boolean;
 begin
+  Result:=False;
   if RawData[x]=0 then begin
     RawData[x]:=RawData[x1];
     RawData[x1]:=RawData[x2];

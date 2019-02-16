@@ -139,5 +139,6 @@ object Form1: TForm1
     TabStop = False
     Caption = 'random'
     TabOrder = 1
+    OnClick = CheckRandomClick
   end
 end
