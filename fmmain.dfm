@@ -22,7 +22,7 @@ object Form1: TForm1
     Top = 64
     Width = 65
     Height = 105
-    Caption = #1074#1083#1077#1074#1086
+    Caption = 'Left'
     OnClick = BitBtn1Click
   end
   object BitBtn2: TSpeedButton
@@ -30,7 +30,7 @@ object Form1: TForm1
     Top = 64
     Width = 65
     Height = 105
-    Caption = #1074#1087#1088#1072#1074#1086
+    Caption = 'Right'
     OnClick = BitBtn2Click
   end
   object BitBtn3: TSpeedButton
@@ -38,7 +38,7 @@ object Form1: TForm1
     Top = 0
     Width = 267
     Height = 65
-    Caption = #1074#1074#1077#1088#1093
+    Caption = 'Up'
     OnClick = BitBtn3Click
   end
   object BitBtn4: TSpeedButton
@@ -46,7 +46,7 @@ object Form1: TForm1
     Top = 168
     Width = 267
     Height = 65
-    Caption = #1074#1085#1080#1079
+    Caption = 'Down'
     OnClick = BitBtn4Click
   end
   object BitBtn5: TSpeedButton
